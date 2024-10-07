@@ -231,3 +231,56 @@ generate_character()
 
 
 
+
+# Треугольники
+
+# Устанавливаем параметры для рисования
+library(ggplot2)
+
+# Шаг 1: Задание трех вершин, напоминающих равносторонний треугольник
+triangle_points <- data.frame(
+  x = c(0, 5, 2.5),
+  y = c(0, 0, 5)
+)
+
+# Шаг 2: Случайная начальная точка
+current_point <- c(runif(1, 0, 5), runif(1, 0, 5))
+
+# Количество итераций
+n_iterations <- 10000
+
+# Массив для хранения всех точек
+points <- data.frame(x = numeric(n_iterations), y = numeric(n_iterations))
+
+# Шаги 3 и 4: Генерация точек
+for (i in 1:n_iterations) {
+  # Бросок кубика для выбора вершины (1, 2, 3)
+  dice_roll <- sample(1:6, 1)
+  chosen_vertex <- ifelse(dice_roll %in% c(1, 2), 1,
+                          ifelse(dice_roll %in% c(3, 4), 2, 3))
+  
+  # Выбираем вершину треугольника
+  target_point <- triangle_points[chosen_vertex, ]
+  
+  # Вычисляем точку, находящуюся посередине между текущей точкой и выбранной вершиной
+  current_point <- c(
+    (current_point[1] + target_point$x) / 2,
+    (current_point[2] + target_point$y) / 2
+  )
+  
+  # Сохраняем новую точку
+  points[i, ] <- current_point
+}
+
+# Построение графика
+ggplot() +
+  geom_point(data = points, aes(x = x, y = y), color = "blue", alpha = 0.5, size = 0.2) +
+  labs(title = "Игра «Построй график» - Треугольник Серпинского
+       ;-)",
+       x = "Координата X", y = "Координата Y") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+    axis.title = element_text(size = 14)
+  )             
+
